@@ -2,14 +2,17 @@ import aiogram
 
 import app.database.models
 import app.database.requests
-
+import app.keyboards
+import app.messages
 
 router = aiogram.Router()
 
 
 @router.message(aiogram.filters.CommandStart())
 async def cmd_start(message: aiogram.types.Message):
-    async with app.database.models.async_session() as session:
-        await app.database.requests.add_user(session, tg_id=message.from_user.id)
+    await message.answer(app.messages.START_MESSAGE, reply_markup=app.keyboards.MAIN)
 
-    await message.answer("Дадова!")
+
+@router.message(aiogram.F.text == "📪 Контакты")
+async def cmd_contacts(message: aiogram.types.Message):
+    await message.answer(app.messages.CONTACTS_MESSAGE, reply_markup=app.keyboards.MAIN)

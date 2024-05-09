@@ -8,6 +8,7 @@ import dotenv
 
 import app.database.models
 import app.handlers
+import app.middlewares
 
 
 dotenv.load_dotenv()
@@ -20,6 +21,9 @@ async def main():
     dp = aiogram.Dispatcher()
 
     dp.include_router(app.handlers.router)
+
+    dp.message.middleware(app.middlewares.RegistrationNewUser())
+
     await dp.start_polling(bot)
 
 
