@@ -23,7 +23,11 @@ async def main():
     dp.include_router(app.handlers.router)
 
     dp.message.middleware(app.middlewares.RegistrationNewUser())
+    dp.message.middleware(app.middlewares.ChechSubUser(bot))
 
+    await bot(
+        aiogram.methods.DeleteWebhook(drop_pending_updates=True),
+    )  # Перед запуском скипаем старые сообщения в боте
     await dp.start_polling(bot)
 
 

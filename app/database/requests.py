@@ -10,3 +10,9 @@ async def add_user(session: sqlalchemy.ext.asyncio.AsyncSession, tg_id):
         await session.commit()
     except sqlalchemy.exc.IntegrityError:
         pass
+
+
+async def get_catalog():
+    async with app.database.models.async_session() as session:
+        result = await session.execute(sqlalchemy.select(app.database.models.Catalog))
+        return result.scalars().all()
