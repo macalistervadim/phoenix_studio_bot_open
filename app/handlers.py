@@ -33,13 +33,15 @@ async def cmd_catalog(message: aiogram.types.Message):
     if request:
         await message.answer("♻️ Секунду, уже достаю каталог и пересылаю вам...")
         for i in request:
+            await message.answer_photo(i.image)
             await message.answer(
-                f"<b>{i.title}</b>\n\n"
-                f"{i.description}\n"
+                f"<b>{i.title.title()}</b>\n\n"
+                f"{i.description}\n\n"
                 f"Цена за услугу: {i.price} руб.\n"
                 f"Срок выполнения: {i.deadline} дней",
                 parse_mode=aiogram.enums.ParseMode.HTML,
             )
+
     else:
         await message.answer(
             "♻️ К сожалению, каталог пуст",

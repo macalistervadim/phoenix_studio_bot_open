@@ -6,6 +6,7 @@ import sys
 import aiogram
 import dotenv
 
+import app.admin.handlers
 import app.database.models
 import app.handlers
 import app.middlewares
@@ -21,9 +22,11 @@ async def main():
     dp = aiogram.Dispatcher()
 
     dp.include_router(app.handlers.router)
+    dp.include_router(app.admin.handlers.router)  # Роутер для админ-команд
 
     dp.message.middleware(app.middlewares.RegistrationNewUser())
     dp.message.middleware(app.middlewares.ChechSubUser(bot))
+    dp.message.middleware(app.middlewares.CancelCommand())
 
     await bot(
         aiogram.methods.DeleteWebhook(drop_pending_updates=True),

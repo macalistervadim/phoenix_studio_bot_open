@@ -29,7 +29,6 @@ class ChechSubUser(aiogram.BaseMiddleware):
             chat_id=os.getenv("TG_CHANNEL_ID", "-1002064780409"),
             user_id=data["event_from_user"].id,
         )
-
         if (
             user_channel_status.status != "left"
             or data["event_update"].message.text == "/start"
@@ -63,5 +62,28 @@ class RegistrationNewUser(aiogram.BaseMiddleware):
                 session,
                 tg_id=data["event_from_user"].id,
             )
+
+        return await handler(event, data)
+
+
+class CancelCommand(aiogram.BaseMiddleware):
+    """
+    Мидлварь для кнопки отмены (сброс стейта)
+    """
+
+    async def __call__(
+        self,
+        handler: typing.Callable[
+            [aiogram.types.Message, typing.Dict[str, typing.Any]],
+            typing.Awaitable[typing.Any],
+        ],
+        event: aiogram.types.Message,
+        data: typing.Dict[str, typing.Any],
+    ) -> typing.Any:
+
+        if data["event_update"].message.text == "Отменить":
+            await data["state"].clear()
+            await event.answer("💤 Выполнение команды отменено")
+            return
 
         return await handler(event, data)

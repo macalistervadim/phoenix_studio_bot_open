@@ -19,3 +19,12 @@ SUBSCRIPTION = aiogram.types.ReplyKeyboardMarkup(
     resize_keyboard=True,
     input_field_placeholder="Выберите пункт меню",
 )
+
+CANCEL_OR_BACK = aiogram.types.ReplyKeyboardMarkup(
+    keyboard=[
+        [aiogram.types.KeyboardButton(text="Отменить")],
+        [aiogram.types.KeyboardButton(text="Назад")],
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Выберите пункт меню",
+)

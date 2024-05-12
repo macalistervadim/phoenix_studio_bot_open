@@ -38,8 +38,8 @@ class Catalog(Base):
     __tablename__ = "catalog"
 
     title = sqlalchemy.Column(sqlalchemy.String(50), unique=True)
-    description = sqlalchemy.Column(sqlalchemy.String(100))
-    image = sqlalchemy.Column(sqlalchemy.Integer, unique=True)
+    description = sqlalchemy.Column(sqlalchemy.String(250))
+    image = sqlalchemy.Column(sqlalchemy.String, unique=True)
     price = sqlalchemy.Column(sqlalchemy.SmallInteger)
     deadline = sqlalchemy.Column(sqlalchemy.SmallInteger)
 
