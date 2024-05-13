@@ -26,6 +26,15 @@ async def cmd_contacts(message: aiogram.types.Message):
     )
 
 
+@router.message(aiogram.F.text == "💚 Вывести команды")
+async def cmd_keyboard(message: aiogram.types.Message):
+    await message.answer(
+        "Секунду... Уже вывожу вам свои команды 💚",
+        reply_markup=app.keyboards.MAIN,
+        parse_mode=aiogram.enums.ParseMode.HTML,
+    )
+
+
 @router.message(aiogram.F.text == "📚 Каталог")
 async def cmd_catalog(message: aiogram.types.Message):
     request = await app.database.requests.get_catalog()

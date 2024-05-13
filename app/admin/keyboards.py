@@ -17,3 +17,12 @@ ADMIN_COMMANDS = aiogram.types.ReplyKeyboardMarkup(
     resize_keyboard=True,
     input_field_placeholder="Выберите пункт меню",
 )
+
+CHOICE_EDIT_ITEM = aiogram.types.ReplyKeyboardMarkup(
+    keyboard=[
+        [aiogram.types.KeyboardButton(text="Верно")],
+        [aiogram.types.KeyboardButton(text="Неверно")],
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Выберите пункт меню",
+)
