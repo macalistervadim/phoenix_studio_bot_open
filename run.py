@@ -27,6 +27,7 @@ async def main():
     dp.message.middleware(app.middlewares.RegistrationNewUser())
     dp.message.middleware(app.middlewares.ChechSubUser(bot))
     dp.message.middleware(app.middlewares.CancelCommand())
+    dp.message.middleware(app.middlewares.CheckTime())
 
     await bot(
         aiogram.methods.DeleteWebhook(drop_pending_updates=True),

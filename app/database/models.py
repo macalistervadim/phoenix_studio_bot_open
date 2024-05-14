@@ -44,6 +44,18 @@ class Catalog(Base):
     deadline = sqlalchemy.Column(sqlalchemy.SmallInteger)
 
 
+class Pcode(Base):
+    __tablename__ = "pcode"
+
+    name = sqlalchemy.Column(sqlalchemy.String(50), unique=True)
+    discount = sqlalchemy.Column(sqlalchemy.Integer)
+    activations = sqlalchemy.Column(sqlalchemy.SmallInteger)
+    author = sqlalchemy.Column(
+        sqlalchemy.Integer,
+        sqlalchemy.ForeignKey("user.id", ondelete="CASCADE"),
+    )
+
+
 class Order(Base):
     __tablename__ = "order"
 

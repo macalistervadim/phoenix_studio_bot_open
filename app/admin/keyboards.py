@@ -7,13 +7,15 @@ ADMIN_COMMANDS = aiogram.types.ReplyKeyboardMarkup(
         [
             aiogram.types.KeyboardButton(text="Создание товара/услуги"),
             aiogram.types.KeyboardButton(text="Редактирование товара/услуги"),
+            aiogram.types.KeyboardButton(text="Удаление товара/услуги"),
         ],
         [
             aiogram.types.KeyboardButton(text="Создание промокода"),
             aiogram.types.KeyboardButton(text="Редактирование промокода"),
+            aiogram.types.KeyboardButton(text="Удаление промокода"),
         ],
     ],
-    row_width=2,
+    row_width=3,
     resize_keyboard=True,
     input_field_placeholder="Выберите пункт меню",
 )

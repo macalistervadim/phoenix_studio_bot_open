@@ -23,7 +23,7 @@ async def add_item(session: sqlalchemy.ext.asyncio.AsyncSession, data):
         )
         session.add(item)
         await session.commit()
-    except sqlalchemy.exc.DBAPIError:
+    except sqlalchemy.exc.IntegrityError:
         pass
 
 
@@ -31,3 +31,13 @@ async def get_catalog():
     async with app.database.models.async_session() as session:
         result = await session.execute(sqlalchemy.select(app.database.models.Catalog))
         return result.scalars().all()
+
+
+async def get_user(tg_id):
+    async with app.database.models.async_session() as session:
+        result = await session.scalar(
+            sqlalchemy.select(app.database.models.User).where(
+                app.database.models.User.tg_id == tg_id,
+            ),
+        )
+        return result

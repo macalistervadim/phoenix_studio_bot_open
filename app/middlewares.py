@@ -1,5 +1,7 @@
+import datetime
 import os
 import typing
+
 
 import aiogram
 
@@ -87,3 +89,33 @@ class CancelCommand(aiogram.BaseMiddleware):
             return
 
         return await handler(event, data)
+
+
+class CheckTime(aiogram.BaseMiddleware):
+    """
+    Мидлварь для проверки часов работы студии
+    """
+
+    async def __call__(
+        self,
+        handler: typing.Callable[
+            [aiogram.types.Message, typing.Dict[str, typing.Any]],
+            typing.Awaitable[typing.Any],
+        ],
+        event: aiogram.types.Message,
+        data: typing.Dict[str, typing.Any],
+    ) -> typing.Any:
+
+        start_time = datetime.time(10, 0)
+        end_time = datetime.time(21, 0)
+
+        formatted_start_time = start_time.strftime("%H:%M")
+        formatted_end_time = end_time.strftime("%H:%M")
+
+        if start_time <= datetime.datetime.now().time() <= end_time:
+            return await handler(event, data)
+        return event.answer(
+            "Упс!\n\n"
+            "🙈 К сожалению, время работы нашего бота вышло.\n"
+            f"Время работы бота: с {formatted_start_time} до {formatted_end_time} часов",
+        )
