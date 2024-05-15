@@ -1,3 +1,4 @@
+import enum
 import os
 
 import dotenv
@@ -32,6 +33,7 @@ class User(Base):
 
     tg_id = sqlalchemy.Column(sqlalchemy.BigInteger, unique=True)
     email = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
+    waiting_order = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
 
 
 class Catalog(Base):
@@ -56,15 +58,14 @@ class Pcode(Base):
     )
 
 
+class OrderStatusEnum(enum.Enum):
+    CREATED = "CREATED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+
+
 class Order(Base):
     __tablename__ = "order"
-
-    class _OrderStateEnum(sqlalchemy.Enum):
-        __name__ = "order_state_enum"
-        __tablename__ = "order_state_enum"
-        CREATED = "создан"
-        IN_PROGRESS = "в процессе"
-        COMPLETED = "завершен"
 
     product = sqlalchemy.Column(
         sqlalchemy.Integer,
@@ -75,10 +76,11 @@ class Order(Base):
         sqlalchemy.Integer,
         sqlalchemy.ForeignKey("user.id", ondelete="CASCADE"),
         index=True,
+        unique=True,
     )
-    state_order = sqlalchemy.Column(
-        _OrderStateEnum(name="order_state_enum"),
-        default=_OrderStateEnum.CREATED,
+    status = sqlalchemy.Column(
+        sqlalchemy.dialects.postgresql.ENUM(OrderStatusEnum, name="order_status_enum"),
+        default=OrderStatusEnum.CREATED,
     )
 
 

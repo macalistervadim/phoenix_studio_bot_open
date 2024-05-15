@@ -11,7 +11,6 @@ ADMIN_COMMANDS = aiogram.types.ReplyKeyboardMarkup(
         ],
         [
             aiogram.types.KeyboardButton(text="Создание промокода"),
-            aiogram.types.KeyboardButton(text="Редактирование промокода"),
             aiogram.types.KeyboardButton(text="Удаление промокода"),
         ],
     ],

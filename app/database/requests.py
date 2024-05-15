@@ -12,6 +12,33 @@ async def add_user(session: sqlalchemy.ext.asyncio.AsyncSession, tg_id):
         pass
 
 
+async def update_user(
+    session: sqlalchemy.ext.asyncio.AsyncSession,
+    tg_id,
+):
+    try:
+        await session.execute(
+            sqlalchemy.update(app.database.models.User)
+            .where(app.database.models.User.tg_id == tg_id)
+            .values(waiting_order=True),
+        )
+        await session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        pass
+
+
+async def add_order(session: sqlalchemy.ext.asyncio.AsyncSession, data):
+    try:
+        item = app.database.models.Order(
+            product=int(data.get("item_id")),
+            user=data.get("user"),
+        )
+        session.add(item)
+        await session.commit()
+    except sqlalchemy.exc.IntegrityError:
+        pass
+
+
 async def add_item(session: sqlalchemy.ext.asyncio.AsyncSession, data):
     try:
         item = app.database.models.Catalog(

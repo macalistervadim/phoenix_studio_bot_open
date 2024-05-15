@@ -91,6 +91,36 @@ class CancelCommand(aiogram.BaseMiddleware):
         return await handler(event, data)
 
 
+class CheckWaitingOrder(aiogram.BaseMiddleware):
+    """
+    Проверка нахождения пользователя в состоянии ожидания заказа
+    """
+
+    async def __call__(
+        self,
+        handler: typing.Callable[
+            [aiogram.types.Message, typing.Dict[str, typing.Any]],
+            typing.Awaitable[typing.Any],
+        ],
+        event: aiogram.types.Message,
+        data: typing.Dict[str, typing.Any],
+    ) -> typing.Any:
+
+        async with app.database.models.async_session():
+            user = await app.database.requests.get_user(
+                tg_id=data["event_from_user"].id,
+            )
+
+            if user.waiting_order is True:
+                await event.answer(
+                    app.messages.WAITING_ORDER_MESSAGE,
+                    parse_mode=aiogram.enums.ParseMode.HTML,
+                )
+
+            elif user.waiting_order is False:
+                return await handler(event, data)
+
+
 class CheckTime(aiogram.BaseMiddleware):
     """
     Мидлварь для проверки часов работы студии
