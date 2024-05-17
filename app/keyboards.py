@@ -34,3 +34,11 @@ CANCEL_OR_BACK = aiogram.types.ReplyKeyboardMarkup(
     resize_keyboard=True,
     input_field_placeholder="Выберите пункт меню",
 )
+
+CANCEL_ORDER = aiogram.types.ReplyKeyboardMarkup(
+    keyboard=[
+        [aiogram.types.KeyboardButton(text="Отменить заказ")],
+    ],
+    resize_keyboard=True,
+    input_field_placeholder="Выберите пункт меню",
+)

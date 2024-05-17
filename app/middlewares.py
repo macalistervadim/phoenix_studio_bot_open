@@ -111,14 +111,17 @@ class CheckWaitingOrder(aiogram.BaseMiddleware):
                 tg_id=data["event_from_user"].id,
             )
 
-            if user.waiting_order is True:
+            if (
+                data["event_update"].message.text == "Отменить заказ"
+                or user.waiting_order is False
+            ):
+                return await handler(event, data)
+
+            elif user.waiting_order is True:
                 await event.answer(
                     app.messages.WAITING_ORDER_MESSAGE,
                     parse_mode=aiogram.enums.ParseMode.HTML,
                 )
-
-            elif user.waiting_order is False:
-                return await handler(event, data)
 
 
 class CheckTime(aiogram.BaseMiddleware):

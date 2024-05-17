@@ -1,3 +1,5 @@
+import os
+
 import aiogram
 
 import app.database.models
@@ -81,6 +83,7 @@ async def product_selected(
         "♻️ Начинаем процесс оформления заказа...\n"
         f"Ваш выбранный товар - №{callback.data[-1]}\n\n"
         "Пожалуйста, укажите ваше Техническое задание к заказу (если это товар - напишите 0)",
+        reply_markup=app.keyboards.CANCEL_OR_BACK,
     )
 
     await state.set_state(st.CreateOrder.description_order)
@@ -90,7 +93,10 @@ async def product_selected(
 async def order_create_description(
     message: aiogram.types.Message,
     state: aiogram.fsm.context.FSMContext,
+    bot: aiogram.Bot,
 ):
+    await state.update_data(message=message.text.lower())
+
     async with app.database.models.async_session() as session:
         user = await app.database.requests.get_user(
             message.from_user.id,
@@ -103,17 +109,43 @@ async def order_create_description(
         )
 
         data = await state.get_data()
-        await app.database.requests.add_order(
+        if await app.database.requests.add_order(
             session,
             data,
-        )
+        ):
 
-        await message.answer(
-            app.messages.SUCC_CREATE_ORDER_MESSAGE,
-            parse_mode=aiogram.enums.ParseMode.HTML,
-        )
+            await message.answer(
+                app.messages.SUCC_CREATE_ORDER_MESSAGE,
+                parse_mode=aiogram.enums.ParseMode.HTML,
+                reply_markup=app.keyboards.CANCEL_ORDER,
+            )
 
+            user_profile_link = f'<a href="tg://user?id={message.from_user.id}">Профиль пользователя</a>'
+            await bot.send_message(
+                os.getenv("ADMIN_ID", "admin_id"),
+                f"❗️ Пришел новый заказ\n\n{user_profile_link}\n"
+                f"Текст: {data.get('message').title()}",
+                parse_mode=aiogram.enums.ParseMode.HTML,
+            )
+        elif await app.database.requests.add_order(session, data) is False:
+            await message.answer("😱 Похоже, у вас уже есть действительный заказ...")
         await state.clear()
+
+
+@router.message(aiogram.F.text == "Отменить заказ")
+async def cmd_cancel_order(message: aiogram.types.Message):
+    async with app.database.models.async_session() as session:
+        user = await app.database.requests.get_user(message.from_user.id)
+        if await app.database.requests.get_order(user.id):
+            await app.database.requests.delete_order(session, user.id)
+
+            await message.answer(
+                "♻️ Ваш заказ успешно отменен",
+                reply_markup=app.keyboards.MAIN,
+                parse_mode=aiogram.enums.ParseMode.HTML,
+            )
+        else:
+            await message.answer("❗️ У вас нет активных заказов")
 
 
 @router.message(aiogram.F.text == "✅ Подписался")
