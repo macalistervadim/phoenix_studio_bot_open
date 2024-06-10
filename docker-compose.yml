@@ -8,3 +8,11 @@ services:
       - "5432:5432"
     env_file:
       - .env
+
+  bot:
+    build: .
+    container_name: phoenix_bot
+    depends_on:
+      - db
+    env_file:
+      - .env
